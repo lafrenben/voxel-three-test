@@ -5,8 +5,11 @@ var voxel = require('voxel');
   setup = setup || defaultSetup;
   var defaults = {
     generate: function(x, y, z) {
-      if (x === 0 && y === 0 && z === 0) {
+      if (x === 16 && y === 1 && z === 16) {
 	return 1;
+      }
+      if (y === 0) {
+      	return 2;
       }
       return 0;
     },
@@ -47,8 +50,8 @@ function defaultSetup(game, avatar) {
   // Testing moving the camera to a third-person perspective 
   var perspective = 'third';
 
-  game.camera.position.set(-2, 2, -2);
-  game.camera.lookAt( new THREE.Vector3() );
+  game.camera.position.set(12, 4, 12);
+  game.camera.lookAt( new THREE.Vector3(16, 1, 16) );
 
   game.interact.on('attain', function() {
     //game.scene.remove(game.camera);
@@ -88,9 +91,7 @@ function defaultSetup(game, avatar) {
 
     var m3d = new THREE.Vector3();
     m3d.set((curMousePos.x / canvas.width) * 2 - 1, -(curMousePos.y / canvas.height) * 2 + 1, 0.5);
-    // NOTE: This code will be slightly different for the most-recent version of THREE.js
-    var projector = new THREE.Projector();
-    projector.unprojectVector(m3d, game.camera);
+    m3d.unproject(game.camera);
     var mv = game.raycastVoxels(game.cameraPosition(), m3d.sub(game.camera.position).normalize().toArray(), 1000);
     console.log("Clicking on voxel " + mv.voxel);
 
